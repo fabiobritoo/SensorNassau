@@ -55,7 +55,7 @@ void setup() {
  
   //__ Inicializa a serial
   
-  Serial.begin(115200);
+  Serial.begin(9600);
   Serial.println();
   Serial.print("Conectando-se na rede ");
   Serial.print(ssid);
