@@ -4,7 +4,8 @@ O objetivo do projeto é conectar um dispositivo NodeMCU com a plataforma de int
 
 ## Etapa 1: Criação da Aplicação em Node-RED
 
-A aplicação em Node-RED será responsável por fazer a comunição do dispositivo
+A aplicação em Node-RED será responsável por fazer a comunição do dispositivo. 
+REalziand
 ## Etapa 2: Criação do Serviço na Plataforma de Internet das Coisas da IBM
 ## Etapa 3: Implementação e Upload do Código no NodeMCU
 ## Etapa 4: Testes na Aplicação e no Quickstarter da IBM
