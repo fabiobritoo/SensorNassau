@@ -12,5 +12,7 @@ asdjado
 asdojasd
 asjoasdj
 ## Etapa 2: Criação do Serviço na Plataforma de Internet das Coisas da IBM
+
+Alteração no GitHub
 ## Etapa 3: Implementação e Upload do Código no NodeMCU
 ## Etapa 4: Testes na Aplicação e no Quickstarter da IBM
