@@ -7,8 +7,8 @@
 #include <DHT_U.h>
 
  
-const char* ssid     = "HOME";
-const char* password = "123456789";   
+const char* ssid     = "NOME";
+const char* password = "SENHA";   
 
 float temperatura = 0;
 String Str = "temperatura";
@@ -35,13 +35,16 @@ int wifiStatus;
 //__ Informações da conexão com o servidor
  
 #define ORG     "tzr7bt"
+
+//__ Dados da API
+
+char authMeth[] = "a-tzr7bt-bb5l9uvp8k";
 #define TOKEN   "TXsWjrJDR9R_V3tMIw"
 
 //__ Variáveis de conexão com o servidor (Não customizaveis)
  
 char server[]   = ORG ".messaging.internetofthings.ibmcloud.com";
 char topic[]    = "iot-2/type/" DEVICE_TYPE "/id/" DEVICE_ID "/evt/1-anl/fmt/json";
-char authMeth[] = "a-tzr7bt-bb5l9uvp8k";
 char token[]    = TOKEN;
 char clientId[] = "a:" ORG ":" DEVICE_ID;
 
