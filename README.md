@@ -1,6 +1,6 @@
 # Conexão NodeMCU com a Plataforma da IBM CLOUD
 
-O objetivo do projeto é conectar um dispositivo NodeMCU com a plataforma de internet das coisas disponibilizada pela IBM. A construção do código e o upload do mesmo foi realizado através da extensão da PlatformIO, utilizando o VSCode. Abaixo se encontram as etapas realizadas para concluir o projeto.
+O objetivo do projeto é conectar um dispositivo NodeMCU com a plataforma de internet das coisas disponibilizada pela IBM. Um sensor de temperatura e umidade, DHT11, será responsável por enviar dados para a aplicação A construção do código e o upload do mesmo foi realizado através da extensão da PlatformIO, utilizando o VSCode. Abaixo se encontram as etapas realizadas para concluir o projeto.
 
 ## Etapa 1: Criação da Aplicação em Node-RED
 
