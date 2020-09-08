@@ -9,7 +9,10 @@ A aplicação em Node-RED será responsável por fazer a comunição do disposit
 Contininaidjaisjdadjasdmn ad kj iasdji 
 asdjado
 
-![Image of Yaktocat](https://octodex.github.com/images/yaktocat.png)
+- [x] @mentions, #refs, [links](), **formatting**, and <del>tags</del> supported
+- [x] list syntax required (any unordered or ordered list supported)
+- [x] this is a complete item
+- [ ] this is an incomplete item
 
 asdojasd
 asjoasdj
