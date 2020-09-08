@@ -19,7 +19,7 @@ A comunicação é realizada através de mensagens JSON, portanto, pode-se facil
         }
     }
 
-Colocando o node de injeção para repetir essa mensagem em intervalos, percebe-se que os dados estão jogando normalmente na plataforma.
+Colocando o node de injeção para repetir essa mensagem em intervalos, percebe-se que os dados estão chegando normalmente na plataforma.
 
 O próximo passo é criar um dispositivo na Plataforma de Internet das Coisas para receber os dados que serão enviados pelo NodeMCU.
 ## Etapa 2: Criação do Serviço na Plataforma de Internet das Coisas da IBM
