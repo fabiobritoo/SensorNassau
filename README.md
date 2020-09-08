@@ -9,6 +9,8 @@ A aplicação em Node-RED será responsável por fazer a comunição do disposit
 Contininaidjaisjdadjasdmn ad kj iasdji 
 asdjado
 
+![Image of Yaktocat](https://octodex.github.com/images/yaktocat.png)
+
 asdojasd
 asjoasdj
 ## Etapa 2: Criação do Serviço na Plataforma de Internet das Coisas da IBM
