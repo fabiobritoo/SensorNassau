@@ -11,7 +11,7 @@ Dois módulos adicionais foram instalados para fazer a conexão da aplicação c
     node-red-contrib-ibm-watson-iot: Utilizada para conexão com o Quickstart
     node-red-contrib-scx-ibmiotapp: Utilizada para conexão com o dispositivo registrado
 
-A comunicação é realizada através de mensagens JSON, portanto, pode-se facilmente testar a conexão da aplicação com o Quickstart enviando um JSON de temperatura e verificando se o resultado pode ser observado no Quickstart.
+A comunicação é realizada através de mensagens JSON, portanto, pode-se facilmente testar a conexão da aplicação com o Quickstart enviando um JSON de temperatura e verificando se o resultado pode ser observado.
 
     {
         "d": {
