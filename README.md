@@ -33,9 +33,9 @@ Após seguir as etapas para a criação um dispositivo e a criação de uma apli
 
     Organization ID		        bfzzmh
     Device Type	            	sensortemp
-    Device ID		            D1
-    Authentication Method	    use-token-auth
-    Authentication Token	    1z+H*A2hTbaykh1NHh
+    Device ID                       D1
+    Authentication Method	        use-token-auth
+    Authentication Token	        1z+H*A2hTbaykh1NHh
 
     API
 
