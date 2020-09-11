@@ -67,3 +67,5 @@ Com o dispositivo criado e devidamente testado, o código foi desenvolvido usand
 [API Documentation (PubSubClient.h)](https://pubsubclient.knolleary.net/api "PubSubClient's API")
 
 ## Etapa 4: Testes na Aplicação e no Quickstarter da IBM
+
+Na documentação do projeto estão os testes realizados para validar a aplicação. Link da aplicação: https://sensortemperatura.mybluemix.net/ui
