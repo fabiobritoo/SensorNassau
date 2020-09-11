@@ -1,6 +1,9 @@
 # Conexão NodeMCU com a Plataforma da IBM CLOUD
 
-O objetivo do projeto é conectar um dispositivo NodeMCU com a plataforma de internet das coisas disponibilizada pela IBM. Um sensor de temperatura e umidade, DHT11, será responsável por enviar dados para a aplicação A construção do código e o upload do mesmo foi realizado através da extensão da PlatformIO, utilizando o VSCode. Abaixo se encontram as etapas realizadas para concluir o projeto.
+O objetivo do projeto é conectar um dispositivo NodeMCU com a plataforma de internet das coisas disponibilizada pela IBM. Um sensor de temperatura e umidade, DHT11, será responsável por enviar dados para a aplicação A construção do código e o upload do mesmo foi realizado através da extensão da PlatformIO, utilizando o VSCode. 
+
+Abaixo se encontram as etapas realizadas para concluir o projeto. A documentação dessas etapas está em [procedimentoConexao.pdf](../blob/master/procedimentoConexao.pdf)
+
 
 ## Etapa 1: Criação da Aplicação em Node-RED
 
@@ -59,5 +62,8 @@ Para o caso desta aplicação específica:
 Usando estes valores, pode-se usar uma plataforma como o MQTTBox para testar o envio de informações para o tópico.
 ## Etapa 3: Implementação e Upload do Código no NodeMCU
 
-Com o dispositivo criado e devidamente testado, o código foi desenvolvido com a extensão da PlatformIO do Visual Studio, usando a biclioteca <PubSubClient.h> para o envio de mensagens para o tópico criado.
+Com o dispositivo criado e devidamente testado, o código foi desenvolvido usando a biclioteca <PubSubClient.h>, realizando o envio de mensagens para o tópico criado.
+
+[API Documentation (PubSubClient.h)](https://pubsubclient.knolleary.net/api "PubSubClient's API")
+
 ## Etapa 4: Testes na Aplicação e no Quickstarter da IBM

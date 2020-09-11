@@ -15,7 +15,7 @@ String Str = "temperatura";
 
 
 #define DHTTYPE DHT11                           // Sensor DHT11  
-#define DHTPIN 5
+#define DHTPIN 5                                // Pino D1
 DHT_Unified dht(DHTPIN, DHTTYPE);               // configurando o Sensor DHT - pino e tipo
  
 
