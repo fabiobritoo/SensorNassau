@@ -29,21 +29,21 @@ int wifiStatus;
  
 //__ Informações do dispositivo
  
-#define DEVICE_TYPE  "SensorDht11NodeMCU"
+#define DEVICE_TYPE  "sensortemp"
 #define DEVICE_ID    "D1"
  
 //__ Informações da conexão com o servidor
  
-#define ORG     "tzr7bt"
+#define ORG     "bfzzmh"
 
 //__ Dados da API
 
-char authMeth[] = "a-tzr7bt-bb5l9uvp8k";
-#define TOKEN   "TXsWjrJDR9R_V3tMIw"
+char authMeth[] = "a-bfzzmh-5v9rsqqer2";
+#define TOKEN   "fmpfj)cBX8RA&TKhew"
 
 //__ Variáveis de conexão com o servidor (Não customizaveis)
  
-char server[]   = ORG ".messaging.internetofthings.ibmcloud.com";
+char host[]   = ORG ".messaging.internetofthings.ibmcloud.com";
 char topic[]    = "iot-2/type/" DEVICE_TYPE "/id/" DEVICE_ID "/evt/1-anl/fmt/json";
 char token[]    = TOKEN;
 char clientId[] = "a:" ORG ":" DEVICE_ID;
@@ -51,7 +51,7 @@ char clientId[] = "a:" ORG ":" DEVICE_ID;
 //__ Inicia WiFi
  
 WiFiClient wifiClient;
-PubSubClient client(server, 1883, NULL, wifiClient);
+PubSubClient client(host, 1883, NULL, wifiClient);
 
 
 void setup() {
@@ -114,7 +114,7 @@ void loop() {
  
   //__ Caso não esteja conectada, tenta a conexão
   Serial.print("Reconectando-se em ");
-  Serial.println(server);
+  Serial.println(host);
  
   while (!!!client.connect(clientId, authMeth, token)) {
     Serial.print(".");
