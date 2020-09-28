@@ -6,20 +6,29 @@
 #include <DHT.h>
 #include <DHT_U.h>
 
- 
-const char* ssid     = "NOME";
-const char* password = "SENHA";   
+#include <ArduinoJson.h>
+
+const char* ssid     = "HOME";
+const char* password = "123456789";   
 
 float temperatura = 0;
 String Str = "temperatura";
 
 
 #define DHTTYPE DHT11                           // Sensor DHT11  
-#define DHTPIN 5                                // Pino D1
+#define DHTPIN 4                                // Pino D1
 DHT_Unified dht(DHTPIN, DHTTYPE);               // configurando o Sensor DHT - pino e tipo
+
+#define LEDPIN 14                               // Pino D5 (Recebimento de Mensagens)
  
 
 int wifiStatus;
+
+
+unsigned long previousMillis = 0;        // will store last time LED was updated
+
+// constants won't change :
+const long interval = 2000;           // interval at which to blink (milliseconds)
  
 //**************************************
  
@@ -31,6 +40,9 @@ int wifiStatus;
  
 #define DEVICE_TYPE  "sensortemp"
 #define DEVICE_ID    "D1"
+
+#define DEVICE_ID_IN    "led"
+
  
 //__ Informações da conexão com o servidor
  
@@ -45,6 +57,7 @@ char authMeth[] = "a-bfzzmh-5v9rsqqer2";
  
 char host[]   = ORG ".messaging.internetofthings.ibmcloud.com";
 char topic[]    = "iot-2/type/" DEVICE_TYPE "/id/" DEVICE_ID "/evt/1-anl/fmt/json";
+char topicIn[]    = "iot-2/type/" DEVICE_TYPE "/id/" DEVICE_ID_IN "/evt/1-anl/fmt/json";
 char token[]    = TOKEN;
 char clientId[] = "a:" ORG ":" DEVICE_ID;
 
@@ -53,9 +66,64 @@ char clientId[] = "a:" ORG ":" DEVICE_ID;
 WiFiClient wifiClient;
 PubSubClient client(host, 1883, NULL, wifiClient);
 
+DynamicJsonDocument doc(1024);                    // Variável para Converter o Json recebido
+
+void callback(char* topicIn, byte* payload, unsigned int length) {
+
+  Serial.print("Message arrived [");
+  Serial.print(topicIn);
+  Serial.print("] ");
+  for (int i=0;i<length;i++) {
+    Serial.print((char)payload[i]);
+  }
+  Serial.println();
+  
+  deserializeJson(doc, payload);
+
+  int val = doc["d"]["led"];
+  Serial.print("Led: "); 
+  Serial.println(val); 
+
+  if (val == 1){
+  
+  digitalWrite(LEDPIN, HIGH);
+  
+  } else if( val == 0 ){
+ 
+  digitalWrite(LEDPIN, LOW);
+  
+  }
+
+  Serial.println();
+ // delay(2000);
+}
+
+
+void reconnect() {
+  // Loop until we're reconnected
+  while (!client.connected()) {
+    Serial.print("Attempting MQTT connection...");
+    // Attempt to connect
+    if (client.connect(clientId, authMeth, token)) {
+      Serial.println("connected");
+      // ... and resubscribe
+      client.subscribe(topicIn);
+    } else {
+      Serial.print("failed, rc=");
+      Serial.print(client.state());
+      Serial.println(" try again in 2 seconds");
+      // Wait 2 seconds before retrying
+      delay(2000);
+    }
+  }
+}
+
+
 
 void setup() {
  
+ pinMode(LEDPIN, OUTPUT);
+
   //__ Inicializa a serial
   
   Serial.begin(9600);
@@ -78,13 +146,18 @@ void setup() {
   //inicia DHT
   
   dht.begin();
- 
+
+  client.setCallback(callback);
+
+  // Allow the hardware to sort itself out
+  delay(1500);
+
+  
 }
 
 //__ Envia os dados para a cloud
 
-// JSON: Ex:
-//  {"d":{"temperatura":20}}
+
  
 void enviaDado(float dado){
  
@@ -105,26 +178,18 @@ void enviaDado(float dado){
   }
  
 }
+
+
  
 void loop() {
 
-  //__ Verifica se está conectada a cloud para envio dos dados
- 
-  if (!!!client.connected()) {
- 
-  //__ Caso não esteja conectada, tenta a conexão
-  Serial.print("Reconectando-se em ");
-  Serial.println(host);
- 
-  while (!!!client.connect(clientId, authMeth, token)) {
-    Serial.print(".");
-    delay(500);
- 
+  unsigned long currentMillis = millis();
+  if (!client.connected()) {
+    reconnect();
   }
- 
-  Serial.println();
- 
- }
+
+  client.loop(); 
+
   //__ Le Sensores
   //temperatura = LeTemperatura();
 
@@ -138,15 +203,18 @@ void loop() {
  else 
   {
    temperatura =  event.temperature;
+
+   //__ Envia um dado para a cloud
+  
+  if (currentMillis - previousMillis >= interval) {
+    previousMillis = currentMillis;
+    enviaDado(temperatura);
   }
 
-  //__ Envia um dado para a cloud
-  
-  enviaDado(temperatura);
+  }
 
-  //__ Faz o envio a cada 2 segundos.
   
-  delay(2000);
- 
+
+   
 }
 
