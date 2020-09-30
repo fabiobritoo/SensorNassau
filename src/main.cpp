@@ -1,19 +1,17 @@
 #include <arduino.h>
 #include <esp8266wifi.h>
 
-#include <PubSubClient.h>
+#include <PubSubClient.h>                          // Envio por MQTT
+
 #include <Adafruit_Sensor.h>                       // Biblioteca DHT Sensor Adafruit 
 #include <DHT.h>
 #include <DHT_U.h>
 
-#include <ArduinoJson.h>
+#include <ArduinoJson.h>                          // Criar o JSon para envio
+#include <time.h>                                 // Enviar a Hora com o Payload
 
 const char* ssid     = "HOME";
 const char* password = "123456789";   
-
-float temperatura = 0;
-String Str = "temperatura";
-
 
 #define DHTTYPE DHT11                           // Sensor DHT11  
 #define DHTPIN 4                                // Pino D1
@@ -21,14 +19,14 @@ DHT_Unified dht(DHTPIN, DHTTYPE);               // configurando o Sensor DHT - p
 
 #define LEDPIN 14                               // Pino D5 (Recebimento de Mensagens)
  
-
+float temperatura = 0;                          // Variável que armazena o valor da temperatura
 int wifiStatus;
 
+int timezone = -3 * 3600;                     // Definição da TimeZone
+int dst = 0;                                  //
 
-unsigned long previousMillis = 0;        // will store last time LED was updated
-
-// constants won't change :
-const long interval = 2000;           // interval at which to blink (milliseconds)
+unsigned long previousMillis = 0;             // Variáveis para intervalo de tempo
+const long interval = 2000;                   // intervalo
  
 //**************************************
  
@@ -38,26 +36,27 @@ const long interval = 2000;           // interval at which to blink (millisecond
  
 //__ Informações do dispositivo
  
-#define DEVICE_TYPE  "sensortemp"
-#define DEVICE_ID    "D1"
+#define DEVICE_TYPE  "NodeMCU"
+#define DEVICE_ID    "Temperatura"
 
-#define DEVICE_ID_IN    "led"
+// Variáves para Inscrição de Tópico
 
+#define DEVICE_ID_IN    "Led"                                                              // Id do tópico de entrada
+char topicIn[]    = "iot-2/type/" DEVICE_TYPE "/id/" DEVICE_ID_IN "/evt/1-anl/fmt/json";   // Tópico de entrada
  
 //__ Informações da conexão com o servidor
  
-#define ORG     "bfzzmh"
+#define ORG     "kh6pjf"
 
 //__ Dados da API
 
-char authMeth[] = "a-bfzzmh-5v9rsqqer2";
-#define TOKEN   "fmpfj)cBX8RA&TKhew"
+char authMeth[] = "a-kh6pjf-4cgid85ysw";
+#define TOKEN   "i-D1Dpto0t+g5wzV+H"
 
 //__ Variáveis de conexão com o servidor (Não customizaveis)
  
 char host[]   = ORG ".messaging.internetofthings.ibmcloud.com";
 char topic[]    = "iot-2/type/" DEVICE_TYPE "/id/" DEVICE_ID "/evt/1-anl/fmt/json";
-char topicIn[]    = "iot-2/type/" DEVICE_TYPE "/id/" DEVICE_ID_IN "/evt/1-anl/fmt/json";
 char token[]    = TOKEN;
 char clientId[] = "a:" ORG ":" DEVICE_ID;
 
@@ -68,6 +67,22 @@ PubSubClient client(host, 1883, NULL, wifiClient);
 
 DynamicJsonDocument doc(1024);                    // Variável para Converter o Json recebido
 
+
+// Método que atua no valor recebido pelo tópico de entrada
+void checkLed(int val){
+
+  Serial.print("Led: "); 
+  Serial.println(val); 
+
+  if (val == 1){
+    digitalWrite(LEDPIN, HIGH);
+  } else if( val == 0 ){
+    digitalWrite(LEDPIN, LOW);
+  }
+ 
+}
+
+// Função que é chamada quando é recebida mensagem no tópico inscrito
 void callback(char* topicIn, byte* payload, unsigned int length) {
 
   Serial.print("Message arrived [");
@@ -80,23 +95,49 @@ void callback(char* topicIn, byte* payload, unsigned int length) {
   
   deserializeJson(doc, payload);
 
-  int val = doc["d"]["led"];
-  Serial.print("Led: "); 
-  Serial.println(val); 
+  int ledValue = doc["d"]["led"];
 
-  if (val == 1){
-  
-  digitalWrite(LEDPIN, HIGH);
-  
-  } else if( val == 0 ){
- 
-  digitalWrite(LEDPIN, LOW);
-  
-  }
+  checkLed(ledValue);
 
-  Serial.println();
- // delay(2000);
 }
+
+// Cálculo da Data Atual
+String dataAtual(){
+  time_t now = time(nullptr);
+  struct tm* p_tm = localtime(&now);
+  String Ano      =  String((p_tm->tm_year + 1900));
+  String Mes      =  String((p_tm->tm_mon + 1));
+  String Dia      =  String((p_tm->tm_mday));
+  String Hora     =  String((p_tm->tm_hour));
+  String Minuto   =  String((p_tm->tm_min));
+  String Segundo;
+
+  if ((p_tm->tm_sec) < 10)  Segundo = Segundo + "0";
+
+
+  Segundo  =  Segundo + String((p_tm->tm_sec));
+  
+
+  
+  String datetime = Ano + "-" + Mes + "-" + Dia + "T" 
+                + Hora + ":" + Minuto + ":" + Segundo;
+  
+  return datetime;
+
+}
+
+// Preparar o payload para o envio de dados
+String preparePayload (float data){
+  
+  DynamicJsonDocument doc(1024);
+  doc["d"]["temperatura"]  = data;
+  doc["d"]["datetime"] = dataAtual();
+  String payload;
+  serializeJson(doc, payload);
+  return payload;
+
+}
+
 
 
 void reconnect() {
@@ -142,11 +183,24 @@ void setup() {
   
   Serial.print("Conectado, endereço de IP: ");
   Serial.println(WiFi.localIP());
+
+  // Configuração da Data
+
+  configTime(timezone, dst, "pool.ntp.org","time.nist.gov");
+  Serial.println("\nWaiting for Internet time");
+
+  while(!time(nullptr)){
+     Serial.print("*");
+     delay(1000);
+  }
+  Serial.println("\nTime response....OK");   
+
   
   //inicia DHT
   
   dht.begin();
 
+  // Define função callback
   client.setCallback(callback);
 
   // Allow the hardware to sort itself out
@@ -158,17 +212,11 @@ void setup() {
 //__ Envia os dados para a cloud
 
 
- 
 void enviaDado(float dado){
  
-  String payload = "{\"d\":{\"" + Str + "\":";
- 
-  payload += dado;
-  payload += "}}";
- 
-  Serial.print("Sending payload: ");
+  String payload = preparePayload(dado);
   Serial.println(payload);
- 
+
  //__ Envia o dado
  
   if (client.publish(topic, (char*) payload.c_str())) {
@@ -178,7 +226,6 @@ void enviaDado(float dado){
   }
  
 }
-
 
  
 void loop() {
@@ -213,8 +260,5 @@ void loop() {
 
   }
 
-  
-
-   
 }
 
