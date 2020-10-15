@@ -11,7 +11,7 @@
 #include <time.h>                                 // Enviar a Hora com o Payload
 
 const char* ssid     = "HOME";
-const char* password = "123456789";   
+const char* password = "12345678";   
 
 #define DHTTYPE DHT11                           // Sensor DHT11  
 #define DHTPIN 4                                // Pino D1
